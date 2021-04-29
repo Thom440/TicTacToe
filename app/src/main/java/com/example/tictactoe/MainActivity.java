@@ -16,6 +16,10 @@ public class MainActivity extends AppCompatActivity {
     private final String PLAYER_O = "O";
     private String currentPlayer;
 
+    private int turnCount;
+
+    private boolean gameComplete;
+
     private TextView instructions;
 
     @Override
@@ -26,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setIcon(R.mipmap.ic_launcher_default);
+
+        gameComplete = false;
+
+        turnCount = 0;
 
         btnArray = new Button[9];
         btnArray[0] = (Button)findViewById(R.id.btn1);
@@ -46,12 +54,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClick(View v) {
-        if (((Button)v).getText().equals("")) {
+        if (((Button)v).getText().equals("") && !gameComplete) {
             ((Button) v).setText(currentPlayer);
-            if (currentPlayer == PLAYER_X) {
+            if (currentPlayer.equals(PLAYER_X)) {
+                turnCount++;
+                if (turnCount >= 3 && checkForGameWinner()) {
+                    declareWinner();
+                    return;
+                }
+                else if (turnCount == 5) {
+                    instructions.setText("Tie Game");
+                    return;
+                }
                 currentPlayer = PLAYER_O;
             }
             else {
+                if (turnCount >= 3 && checkForGameWinner()) {
+                    declareWinner();
+                    return;
+                }
                 currentPlayer = PLAYER_X;
             }
             instructions.setText("Player " + currentPlayer + "'s Turn");
@@ -59,12 +80,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void newGameClick(View v) {
-        for (int i = 0; i < btnArray.length; i++) {
-            btnArray[i].setText("");
+        for (Button button : btnArray) {
+            button.setText("");
         }
+
+        gameComplete = false;
+
+        turnCount = 0;
 
         currentPlayer = PLAYER_X;
 
         instructions.setText("Player " + currentPlayer + "'s Turn");
+    }
+
+    private void declareWinner() {
+        gameComplete = true;
+        instructions.setText(currentPlayer + " wins");
+    }
+
+    private boolean checkForGameWinner() {
+        if (btnArray[0].getText().equals(currentPlayer) && btnArray[1].getText().equals(currentPlayer) &&
+            btnArray[2].getText().equals(currentPlayer)) {
+            return true;
+        }
+        else if (btnArray[3].getText().equals(currentPlayer) && btnArray[4].getText().equals(currentPlayer) &&
+                btnArray[5].getText().equals(currentPlayer)) {
+            return true;
+        }
+        else if (btnArray[6].getText().equals(currentPlayer) && btnArray[7].getText().equals(currentPlayer) &&
+                btnArray[8].getText().equals(currentPlayer)) {
+            return true;
+        }
+        else if (btnArray[0].getText().equals(currentPlayer) && btnArray[4].getText().equals(currentPlayer) &&
+                btnArray[8].getText().equals(currentPlayer)) {
+            return true;
+        }
+        else if (btnArray[2].getText().equals(currentPlayer) && btnArray[4].getText().equals(currentPlayer) &&
+                btnArray[6].getText().equals(currentPlayer)) {
+            return true;
+        }
+        else if (btnArray[0].getText().equals(currentPlayer) && btnArray[3].getText().equals(currentPlayer) &&
+                btnArray[6].getText().equals(currentPlayer)) {
+            return true;
+        }
+        else if (btnArray[1].getText().equals(currentPlayer) && btnArray[4].getText().equals(currentPlayer) &&
+                btnArray[7].getText().equals(currentPlayer)) {
+            return true;
+        }
+        else {
+            return btnArray[2].getText().equals(currentPlayer) && btnArray[5].getText().equals(currentPlayer) &&
+                    btnArray[8].getText().equals(currentPlayer);
+        }
     }
 }
