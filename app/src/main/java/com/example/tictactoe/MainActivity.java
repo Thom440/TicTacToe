@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private final String PLAYER_X = "X";
     private final String PLAYER_O = "O";
     private String currentPlayer;
+    private String instructionString;
 
     private int turnCount;
 
@@ -27,9 +29,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setIcon(R.mipmap.ic_launcher_default);
+        // Added a try catch because setDisplayShowHomeEnabled
+        // could possibly throw a null pointer exception
+        try {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setIcon(R.mipmap.ic_launcher_default);
+        }
+        catch (NullPointerException ex) {
+            Toast.makeText(this, "Unable to load icon", Toast.LENGTH_SHORT).show();
+        }
 
         gameComplete = false;
 
@@ -50,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
 
         instructions = (TextView)findViewById(R.id.instructions);
 
-        instructions.setText("Player " + currentPlayer + "'s Turn");
+        // Creating this string to clear a warning when using setText()
+        instructionString = "Player " + currentPlayer + "'s Turn";
+        instructions.setText(instructionString);
     }
 
     public void onClick(View v) {
@@ -63,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 else if (turnCount == 5) {
-                    instructions.setText("Tie Game");
+                    instructionString = "Tie Game";
+                    instructions.setText(instructionString);
                     return;
                 }
                 currentPlayer = PLAYER_O;
@@ -75,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 currentPlayer = PLAYER_X;
             }
-            instructions.setText("Player " + currentPlayer + "'s Turn");
+            instructionString = "Player " + currentPlayer + "'s Turn";
+            instructions.setText(instructionString);
         }
     }
 
@@ -90,12 +103,15 @@ public class MainActivity extends AppCompatActivity {
 
         currentPlayer = PLAYER_X;
 
-        instructions.setText("Player " + currentPlayer + "'s Turn");
+        instructionString = "Player " + currentPlayer + "'s Turn";
+        instructions.setText(instructionString);
     }
 
     private void declareWinner() {
         gameComplete = true;
-        instructions.setText(currentPlayer + " wins");
+
+        instructionString = currentPlayer + " wins";
+        instructions.setText(instructionString);
     }
 
     private boolean checkForGameWinner() {
