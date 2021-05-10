@@ -45,15 +45,9 @@ public class MainActivity extends AppCompatActivity {
         turnCount = 0;
 
         btnArray = new Button[9];
-        btnArray[0] = (Button)findViewById(R.id.btn1);
-        btnArray[1] = (Button)findViewById(R.id.btn2);
-        btnArray[2] = (Button)findViewById(R.id.btn3);
-        btnArray[3] = (Button)findViewById(R.id.btn4);
-        btnArray[4] = (Button)findViewById(R.id.btn5);
-        btnArray[5] = (Button)findViewById(R.id.btn6);
-        btnArray[6] = (Button)findViewById(R.id.btn7);
-        btnArray[7] = (Button)findViewById(R.id.btn8);
-        btnArray[8] = (Button)findViewById(R.id.btn9);
+        for (int i = 0; i < btnArray.length; i++) {
+            btnArray[i] = findViewById(getResources().getIdentifier("btn" + (i + 1), "id", getPackageName()));
+        }
 
         currentPlayer = PLAYER_X;
 
